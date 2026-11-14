@@ -15,12 +15,12 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from gaz.db import connect  # noqa: E402
+from gaz.db import connect, login_password  # noqa: E402
 
 
 def collect():
     user = os.environ.get("GAZ_MONITOR_USER", "monitor")
-    pw = os.environ.get("GAZ_PASSWORD_MONITOR") or os.environ.get("GAZ_DEMO_PASSWORD")
+    pw = login_password(user)
     with connect(user=user, password=pw, app="health_report") as conn:
         health = [dict(zip(("metric", "value", "status", "threshold"), r)) for r in conn.execute("SELECT * FROM admin.v_health")]
         tables = [dict(zip(("schema", "table", "rows", "size", "index_size"), r)) for r in

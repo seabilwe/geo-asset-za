@@ -13,7 +13,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))
 from psycopg import sql  # noqa: E402
-from gaz.db import connect  # noqa: E402
+from gaz.db import connect, login_password  # noqa: E402
 
 LOGINS = [
     # login,          group,           connection limit
@@ -39,7 +39,7 @@ SETTINGS = {
 def main():
     with connect(app="create_login_roles") as conn:
         for login, group, limit in LOGINS:
-            pw = os.environ.get(f"GAZ_PASSWORD_{login.upper()}") or os.environ.get("GAZ_DEMO_PASSWORD")
+            pw = login_password(login)
             exists = conn.execute("SELECT 1 FROM pg_roles WHERE rolname = %s", (login,)).fetchone()
             verb = sql.SQL("ALTER") if exists else sql.SQL("CREATE")
             stmt = sql.SQL("{} ROLE {} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE CONNECTION LIMIT {}").format(

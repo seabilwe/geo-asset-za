@@ -21,7 +21,7 @@ from psycopg_pool import ConnectionPool
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from api import queries as q  # noqa: E402
-from gaz.db import dsn  # noqa: E402
+from gaz.db import dsn, login_password  # noqa: E402
 
 pool: ConnectionPool | None = None
 
@@ -30,7 +30,7 @@ pool: ConnectionPool | None = None
 async def lifespan(app):
     global pool
     user = os.environ.get("GAZ_WEB_USER", "web_app")
-    pw = os.environ.get("GAZ_PASSWORD_WEB_APP") or os.environ.get("GAZ_DEMO_PASSWORD")
+    pw = login_password(user)
     pool = ConnectionPool(dsn(user=user, password=pw), min_size=1, max_size=int(os.environ.get("GAZ_API_POOL", "5")),
                           kwargs={"application_name": "geo-asset-za-api", "autocommit": True}, open=True)
     yield

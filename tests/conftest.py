@@ -11,7 +11,7 @@ import psycopg
 import pytest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-from gaz.db import connect  # noqa: E402
+from gaz.db import connect, login_password  # noqa: E402
 
 HATFIELD = "ST_SetSRID(ST_MakePoint(28.2370, -25.7480), 4326)"     # inside ward 56
 JOHANNESBURG = "ST_SetSRID(ST_MakePoint(28.0473, -26.2041), 4326)"  # outside the study area
@@ -32,7 +32,7 @@ def as_role():
     opened = []
 
     def _open(login):
-        pw = os.environ.get(f"GAZ_PASSWORD_{login.upper()}") or os.environ.get("GAZ_DEMO_PASSWORD")
+        pw = login_password(login)
         conn = connect(user=login, password=pw, app="pytest")
         opened.append(conn)
         return conn

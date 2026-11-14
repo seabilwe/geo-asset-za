@@ -22,7 +22,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from api import queries as q  # noqa: E402
-from gaz.db import connect  # noqa: E402
+from gaz.db import connect, login_password  # noqa: E402
 
 
 def clean(v):
@@ -49,9 +49,9 @@ def main():
     a = ap.parse_args()
     out = a.out
     out.mkdir(parents=True, exist_ok=True)
-    pw = os.environ.get("GAZ_PASSWORD_WEB_APP") or os.environ.get("GAZ_DEMO_PASSWORD")
     sizes = {}
-    with connect(user=os.environ.get("GAZ_WEB_USER", "web_app"), password=pw, app="export_snapshot") as conn:
+    web_user = os.environ.get("GAZ_WEB_USER", "web_app")
+    with connect(user=web_user, password=login_password(web_user), app="export_snapshot") as conn:
         k = q.kpis(conn)
         sizes["kpis.json"] = dump(out / "kpis.json", k)
         sizes["summary.json"] = dump(out / "summary.json", q.summary_by_type(conn))
@@ -81,8 +81,8 @@ def main():
             assert not missing, f"details missing for {len(missing)} assets"
             sizes[f"details_{cls}.json"] = dump(out / f"details_{cls}.json", details)
 
-    mpw = os.environ.get("GAZ_PASSWORD_MONITOR") or os.environ.get("GAZ_DEMO_PASSWORD")
-    with connect(user=os.environ.get("GAZ_MONITOR_USER", "monitor"), password=mpw, app="export_snapshot") as conn:
+    mon_user = os.environ.get("GAZ_MONITOR_USER", "monitor")
+    with connect(user=mon_user, password=login_password(mon_user), app="export_snapshot") as conn:
         health = [dict(zip(("metric", "value", "status", "threshold"), r)) for r in conn.execute("SELECT * FROM admin.v_health")]
         backups = [dict(zip(("kind", "finished_at", "status", "size_bytes", "details"), r)) for r in
                    conn.execute("SELECT kind, finished_at, status, size_bytes, details FROM admin.backup_log ORDER BY backup_id DESC LIMIT 4")]

@@ -5,7 +5,7 @@
 
 The source of the geometry (OpenStreetMap or synthetic) is taken from the file name prefix ("osm_" or
 "synthetic_"), or given with --geometry-source. Attributes are always recorded as synthetic in this demonstration.
-Connects as the ETL login role (GAZ_ETL_USER, default etl_runner): it can write to staging and run the two
+Connects as the ETL login role (GAZ_ETL_USER, default etl_runner; password from GAZ_PASSWORD_ETL_RUNNER or GAZ_DEMO_PASSWORD): it can write to staging and run the two
 pipeline functions, and has no direct rights on the register.
 """
 import argparse
@@ -15,7 +15,7 @@ import pathlib
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-from gaz.db import connect  # noqa: E402
+from gaz.db import connect, login_password  # noqa: E402
 
 COLS = ["row_no", "asset_code", "asset_name", "type_code", "status_code", "install_date", "wkt", "lon", "lat", "source_ref", "details"]
 
@@ -23,7 +23,7 @@ COLS = ["row_no", "asset_code", "asset_name", "type_code", "status_code", "insta
 def import_file(path: pathlib.Path, geometry_source: str | None = None, validate_only: bool = False, user: str | None = None, quiet=False):
     geometry_source = geometry_source or ("SYNTHETIC" if path.name.startswith("synthetic_") else "OSM")
     user = user or os.environ.get("GAZ_ETL_USER", "etl_runner")
-    password = os.environ.get("GAZ_ETL_PASSWORD")
+    password = login_password(user)
     with connect(user=user, password=password, app="import_assets") as conn:
         batch = conn.execute(
             "INSERT INTO staging.import_batches (source_file, geometry_source_code, attribute_source_code) VALUES (%s, %s, 'SYNTHETIC') RETURNING batch_id",

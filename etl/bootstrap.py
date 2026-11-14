@@ -34,6 +34,13 @@ def main():
     a = ap.parse_args()
     db = os.environ.get("PGDATABASE", DEFAULT_DB)
 
+    for attempt in range(30):                 # the server may still be starting (first run of a container)
+        try:
+            connect(dbname="postgres", app="bootstrap").close()
+            break
+        except Exception as e:
+            print(f"waiting for the database ({e.__class__.__name__})")
+            time.sleep(2)
     with connect(dbname="postgres", autocommit=True, app="bootstrap") as conn:
         exists = conn.execute("SELECT 1 FROM pg_database WHERE datname = %s", (db,)).fetchone()
         if exists and a.reset:

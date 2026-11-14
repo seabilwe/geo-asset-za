@@ -9,6 +9,11 @@ import psycopg
 DEFAULT_DB = "geoasset_za"
 
 
+def login_password(login: str) -> str | None:
+    """Password for a demonstration login role: GAZ_PASSWORD_<LOGIN> if set, else GAZ_DEMO_PASSWORD, else None (trust auth)."""
+    return os.environ.get(f"GAZ_PASSWORD_{login.upper()}") or os.environ.get("GAZ_DEMO_PASSWORD")
+
+
 def dsn(user: str | None = None, dbname: str | None = None, password: str | None = None) -> str:
     parts = {
         "host": os.environ.get("PGHOST", "localhost"),

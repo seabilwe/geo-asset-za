@@ -7,6 +7,8 @@
 #
 # Ports avoid the usual 5432 and 8080, which are often taken by a local PostgreSQL or GeoServer.
 
+name: geo-asset-za
+
 x-app: &app
   build: .
   image: geo-asset-za-app
@@ -36,7 +38,8 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      # over TCP: during first-time initialisation the server listens on the Unix socket only, then restarts
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 20
