@@ -1,0 +1,6 @@
+asset_code,asset_name,type_code,status_code,install_date,wkt,lon,lat,source_ref,details
+,Recycling drop-off,RECYCLING_POINT,ACTIVE,2013-12-02,POINT (28.2300200 -25.7733600),,,node/286987439,{}
+,Recycling drop-off,RECYCLING_POINT,ACTIVE,2008-05-10,POINT (28.2359000 -25.7547200),,,node/292559463,{}
+,Recycling drop-off,RECYCLING_POINT,ACTIVE,2018-03-16,POINT (28.2564300 -25.7787500),,,node/611055379,{}
+,Recycling drop-off,RECYCLING_POINT,ACTIVE,2013-02-13,POINT (28.2322835 -25.7740953),,,node/2051225298,{}
+,Recycling drop-off,RECYCLING_POINT,ACTIVE,2020-09-17,POINT (28.2208197 -25.7640458),,,node/12133726252,{}

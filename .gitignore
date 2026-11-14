@@ -1,0 +1,8 @@
+# raw downloads are large and come from their publishers (see data/README.md)
+raw/
+backups/
+*.backup
+.env
+__pycache__/
+.pytest_cache/
+administration/performance/results/*.tmp

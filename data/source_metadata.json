@@ -1,0 +1,10 @@
+{
+ "osm_timestamp": "2026-11-14T14:50:35Z",
+ "study_wards": [
+  56,
+  82,
+  92
+ ],
+ "study_area_km2": 28.08,
+ "seed": 20261114
+}
