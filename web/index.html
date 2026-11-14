@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GEO-ASSET ZA</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="geo-asset.css">
+</head>
+<body>
+<!-- Local demonstration served by the API container (docker compose up). Reads the live API, not a snapshot. -->
+<main class="wrap" data-geoasset data-base="/api/" data-source="api">
+  <h1>GEO-ASSET ZA</h1>
+  <p class="lede">Live view of the local database through the read-only API. All asset attributes and maintenance records are synthetic.
+     API reference: <a href="/docs">/docs</a>.</p>
+  <section>
+    <h2>Explore the register</h2>
+    <div class="ga-explorer">
+      <div class="ga-controls"></div>
+      <div class="ga-body"><div class="ga-map"></div><aside class="ga-panel" aria-live="polite"></aside></div>
+    </div>
+  </section>
+  <section class="ga-dashboard">
+    <h2>Dashboard</h2>
+    <ul class="ga-kpis"></ul>
+    <div class="ga-panels">
+      <div class="ga-card ga-card-wide ga-condition"><h3>Condition by asset type</h3><div class="ga-legend-top"></div><div class="ga-bars"></div>
+        <details><summary>Show as a table</summary><div class="table-wrap ga-table"></div></details></div>
+      <div class="ga-card ga-spend"><h3>Maintenance spend per year</h3><div class="ga-legend-top"></div><div class="ga-chart"></div>
+        <details><summary>Show as a table</summary><div class="table-wrap ga-table"></div></details></div>
+      <div class="ga-card"><h3>Work orders finished on time</h3><div class="ga-bars ga-performance"></div></div>
+      <div class="ga-card ga-card-wide"><h3>Highest-risk assets</h3><div class="table-wrap ga-priorities"></div></div>
+    </div>
+  </section>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="geo-asset.js"></script>
+</body>
+</html>

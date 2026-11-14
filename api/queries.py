@@ -22,6 +22,12 @@ def summary_by_type(conn):
     return _rows(conn.execute("SELECT * FROM api.summary_by_type ORDER BY class_code, assets DESC"))
 
 
+def condition_by_type(conn):
+    """Assets per type and latest condition grade (0 = not yet inspected)."""
+    return _rows(conn.execute("""SELECT class_code, type_code, type_name, coalesce(condition_grade, 0) AS grade, count(*) AS assets
+                                   FROM api.assets GROUP BY 1, 2, 3, 4 ORDER BY 1, 2, 4"""))
+
+
 def spend_by_month(conn):
     return _rows(conn.execute("SELECT month, class_code, cost_status, amount_zar FROM api.spend_by_month ORDER BY month, class_code, cost_status"))
 

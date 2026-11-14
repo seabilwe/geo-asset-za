@@ -76,6 +76,11 @@ def summary():
     return run(q.summary_by_type)
 
 
+@app.get("/api/condition")
+def condition():
+    return run(q.condition_by_type)
+
+
 @app.get("/api/spend")
 def spend():
     return run(q.spend_by_month)

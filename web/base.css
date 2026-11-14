@@ -1,0 +1,16 @@
+/* Minimal stand-alone styles for the local demo page; the portfolio site supplies its own (same tokens). */
+:root{--paper:#EEF0E6;--paper-2:#E3E7D8;--sheet:#F6F7F0;--ink:#23312F;--ink-soft:#4E5C58;--contour:#A0673A;--contour-deep:#7A4B26;--water:#2F6F9A;
+  --rule:#C9CEBB;--alert:#A33B2B;--sand:#F1E6D6;--sand-2:#E7D5BE;--deep:#1C2A28;--serif:Georgia,"Times New Roman",serif;
+  --sans:"Segoe UI",system-ui,sans-serif;--radius:14px;--radius-sm:9px;--radius-lg:20px;--radius-pill:999px;--measure:42rem;--lift:0 6px 20px rgba(35,49,47,.08)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 var(--sans)}
+.wrap{max-width:1240px;margin:0 auto;padding:1.5rem 1rem 4rem}
+h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.2}
+h2{margin:2.5rem 0 1rem}
+a{color:var(--water)}
+.lede{color:var(--ink-soft);max-width:var(--measure)}
+.table-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--sheet)}
+.data-table{width:100%;border-collapse:collapse;font-size:.95rem}
+.data-table th,.data-table td{padding:.5rem .7rem;text-align:left;border-bottom:1px solid var(--rule)}
+.data-table thead th{font-weight:500;color:var(--ink-soft);background:var(--paper-2)}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums}
