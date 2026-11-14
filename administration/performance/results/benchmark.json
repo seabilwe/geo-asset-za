@@ -1,0 +1,251 @@
+{
+ "points": 2000000,
+ "runs": 7,
+ "load_seconds": 7.3,
+ "table_size": "197 MB",
+ "server": {
+  "postgres": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "postgis": "3.4.2",
+  "shared_buffers": "128MB",
+  "work_mem": "4MB",
+  "machine": "x86_64",
+  "parallel_workers": 0
+ },
+ "spatial": {
+  "bbox": {
+   "before": {
+    "median_ms": 970.488,
+    "min_ms": 825.711,
+    "max_ms": 1228.169,
+    "scans": [
+     "Seq Scan"
+    ],
+    "index_used": false,
+    "shared_hit": 12990,
+    "shared_read": 6687,
+    "rows": 1287593
+   },
+   "after": {
+    "median_ms": 2450.995,
+    "min_ms": 2307.459,
+    "max_ms": 2899.894,
+    "scans": [
+     "Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 1055992,
+    "shared_read": 238169,
+    "rows": 1287593
+   },
+   "clustered": {
+    "median_ms": 1063.186,
+    "min_ms": 858.174,
+    "max_ms": 1313.802,
+    "scans": [
+     "Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 17125,
+    "shared_read": 7650,
+    "rows": 1287593
+   }
+  },
+  "small_bbox": {
+   "before": {
+    "median_ms": 445.155,
+    "min_ms": 434.468,
+    "max_ms": 570.72,
+    "scans": [
+     "Seq Scan"
+    ],
+    "index_used": false,
+    "shared_hit": 13086,
+    "shared_read": 6591,
+    "rows": 4153
+   },
+   "after": {
+    "median_ms": 7.328,
+    "min_ms": 6.266,
+    "max_ms": 9.314,
+    "scans": [
+     "Bitmap Heap Scan",
+     "Bitmap Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 3784,
+    "shared_read": 0,
+    "rows": 4153
+   },
+   "clustered": {
+    "median_ms": 4.031,
+    "min_ms": 3.765,
+    "max_ms": 4.19,
+    "scans": [
+     "Bitmap Heap Scan",
+     "Bitmap Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 108,
+    "shared_read": 0,
+    "rows": 4153
+   }
+  },
+  "within_250m_geography": {
+   "before": {
+    "median_ms": 4097.598,
+    "min_ms": 3469.105,
+    "max_ms": 4253.352,
+    "scans": [
+     "Seq Scan"
+    ],
+    "index_used": false,
+    "shared_hit": 13470,
+    "shared_read": 6207,
+    "rows": 743
+   },
+   "after": {
+    "median_ms": 3395.194,
+    "min_ms": 2874.797,
+    "max_ms": 3917.079,
+    "scans": [
+     "Seq Scan"
+    ],
+    "index_used": false,
+    "shared_hit": 16295,
+    "shared_read": 3382,
+    "rows": 743
+   },
+   "clustered": {
+    "median_ms": 3363.601,
+    "min_ms": 3038.53,
+    "max_ms": 3591.958,
+    "scans": [
+     "Seq Scan"
+    ],
+    "index_used": false,
+    "shared_hit": 11393,
+    "shared_read": 8285,
+    "rows": 743
+   }
+  },
+  "within_250m_indexable": {
+   "before": {
+    "median_ms": 415.689,
+    "min_ms": 310.859,
+    "max_ms": 471.206,
+    "scans": [
+     "Seq Scan"
+    ],
+    "index_used": false,
+    "shared_hit": 13790,
+    "shared_read": 5887,
+    "rows": 743
+   },
+   "after": {
+    "median_ms": 3.019,
+    "min_ms": 2.789,
+    "max_ms": 3.621,
+    "scans": [
+     "Bitmap Heap Scan",
+     "Bitmap Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 1419,
+    "shared_read": 0,
+    "rows": 743
+   },
+   "clustered": {
+    "median_ms": 2.648,
+    "min_ms": 2.567,
+    "max_ms": 2.98,
+    "scans": [
+     "Bitmap Heap Scan",
+     "Bitmap Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 47,
+    "shared_read": 0,
+    "rows": 743
+   }
+  },
+  "nearest_10": {
+   "before": {
+    "median_ms": 1060.368,
+    "min_ms": 864.89,
+    "max_ms": 1176.862,
+    "scans": [
+     "Seq Scan"
+    ],
+    "index_used": false,
+    "shared_hit": 13918,
+    "shared_read": 5759,
+    "rows": 2000000
+   },
+   "after": {
+    "median_ms": 0.104,
+    "min_ms": 0.093,
+    "max_ms": 0.163,
+    "scans": [
+     "Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 17,
+    "shared_read": 0,
+    "rows": 10
+   },
+   "clustered": {
+    "median_ms": 0.168,
+    "min_ms": 0.147,
+    "max_ms": 0.203,
+    "scans": [
+     "Index Scan on asset_points_geom_gist"
+    ],
+    "index_used": true,
+    "shared_hit": 6,
+    "shared_read": 0,
+    "rows": 10
+   }
+  }
+ },
+ "register": {
+  "before": {
+   "median_ms": 55.1,
+   "min_ms": 53.703,
+   "max_ms": 59.534,
+   "scans": [
+    "Seq Scan",
+    "Index Scan on infrastructure_assets_type_idx"
+   ],
+   "index_used": true,
+   "shared_hit": 1624,
+   "shared_read": 0,
+   "rows": 87459
+  },
+  "after": {
+   "median_ms": 30.791,
+   "min_ms": 29.596,
+   "max_ms": 31.351,
+   "scans": [
+    "Index Only Scan on inspections_asset_date_idx",
+    "Index Scan on infrastructure_assets_pkey"
+   ],
+   "index_used": true,
+   "shared_hit": 975,
+   "shared_read": 0,
+   "rows": 78188
+  }
+ },
+ "plans": {
+  "bbox_before": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=14078 read=5599\n  ->  Seq Scan on asset_points (actual rows=1287593 loops=1)\n        Filter: st_intersects(geom, '0103000020E610000001000000050000009A99999999193C406666666666E639C09A99999999193C409A999999999939C06666666666663C409A999999999939C06666666666663C406666666666E639C09A99999999193C406666666666E639C0'::geometry)\n        Rows Removed by Filter: 712407\n        Buffers: shared hit=14078 read=5599",
+  "bbox_after": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=1056360 read=237801 written=1\n  ->  Index Scan using asset_points_geom_gist on asset_points (actual rows=1287593 loops=1)\n        Index Cond: (geom && '0103000020E610000001000000050000009A99999999193C406666666666E639C09A99999999193C409A999999999939C06666666666663C409A999999999939C06666666666663C406666666666E639C09A99999999193C406666666666E639C0'::geometry)\n        Filter: st_intersects(geom, '0103000020E610000001000000050000009A99999999193C406666666666E639C09A99999999193C409A999999999939C06666666666663C409A999999999939C06666666666663C406666666666E639C09A99999999193C406666666666E639C0'::geometry)\n        Rows Removed by Filter: 25\n        Buffers: shared hit=1056360 read=237801 written=1",
+  "small_bbox_after": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=3000 read=784\n  ->  Bitmap Heap Scan on asset_points (actual rows=4153 loops=1)\n        Filter: st_intersects(geom, '0103000020E610000001000000050000007B14AE47E13A3C40E17A14AE47C139C07B14AE47E13A3C401F85EB51B8BE39C03D0AD7A3703D3C401F85EB51B8BE39C03D0AD7A3703D3C40E17A14AE47C139C07B14AE47E13A3C40E17A14AE47C139C0'::geometry)\n        Rows Removed by Filter: 3\n        Heap Blocks: exact=3749\n        Buffers: shared hit=3000 read=784\n        ->  Bitmap Index Scan on asset_points_geom_gist (actual rows=4156 loops=1)\n              Index Cond: (geom && '0103000020E610000001000000050000007B14AE47E13A3C40E17A14AE47C139C07B14AE47E13A3C401F85EB51B8BE39C03D0AD7A3703D3C401F85EB51B8BE39C03D0AD7A3703D3C40E17A14AE47C139C07B14AE47E13A3C40E17A14AE47C139C0'::geometry)\n              Buffers: shared read=35",
+  "within_250m_geography_after": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=16200 read=3477\n  ->  Seq Scan on asset_points (actual rows=743 loops=1)\n        Filter: st_dwithin((geom)::geography, '0101000020E6100000E9263108AC3C3C40736891ED7CBF39C0'::geography, '250'::double precision, true)\n        Rows Removed by Filter: 1999257\n        Buffers: shared hit=16200 read=3477",
+  "within_250m_indexable_after": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=1419\n  ->  Bitmap Heap Scan on asset_points (actual rows=743 loops=1)\n        Recheck Cond: (geom && '0103000020E6100000010000000500000095438B6CE73B3C40C74B378941C039C095438B6CE73B3C401F85EB51B8BE39C03D0AD7A3703D3C401F85EB51B8BE39C03D0AD7A3703D3C40C74B378941C039C095438B6CE73B3C40C74B378941C039C0'::geometry)\n        Filter: st_dwithin((geom)::geography, '0101000020E6100000E9263108AC3C3C40736891ED7CBF39C0'::geography, '250'::double precision, true)\n        Rows Removed by Filter: 711\n        Heap Blocks: exact=1401\n        Buffers: shared hit=1419\n        ->  Bitmap Index Scan on asset_points_geom_gist (actual rows=1454 loops=1)\n              Index Cond: (geom && '0103000020E6100000010000000500000095438B6CE73B3C40C74B378941C039C095438B6CE73B3C401F85EB51B8BE39C03D0AD7A3703D3C401F85EB51B8BE39C03D0AD7A3703D3C40C74B378941C039C095438B6CE73B3C40C74B378941C039C0'::geometry)\n              Buffers: shared hit=18",
+  "bbox_clustered": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=10086 read=14689\n  ->  Index Scan using asset_points_geom_gist on asset_points (actual rows=1287593 loops=1)\n        Index Cond: (geom && '0103000020E610000001000000050000009A99999999193C406666666666E639C09A99999999193C409A999999999939C06666666666663C409A999999999939C06666666666663C406666666666E639C09A99999999193C406666666666E639C0'::geometry)\n        Filter: st_intersects(geom, '0103000020E610000001000000050000009A99999999193C406666666666E639C09A99999999193C409A999999999939C06666666666663C409A999999999939C06666666666663C406666666666E639C09A99999999193C406666666666E639C0'::geometry)\n        Rows Removed by Filter: 25\n        Buffers: shared hit=10086 read=14689",
+  "register_before": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=1624\n  ->  Unique (actual rows=5581 loops=1)\n        Buffers: shared hit=1624\n        ->  Sort (actual rows=40538 loops=1)\n              Sort Key: i.asset_id, i.inspected_on DESC, i.inspection_id DESC\n              Sort Method: quicksort  Memory: 3266kB\n              Buffers: shared hit=1624\n              ->  Hash Join (actual rows=40538 loops=1)\n                    Hash Cond: (i.asset_id = a.asset_id)\n                    Buffers: shared hit=1624\n                    ->  Seq Scan on inspections i (actual rows=81873 loops=1)\n                          Buffers: shared hit=1408\n                    ->  Hash (actual rows=5586 loops=1)\n                          Buckets: 8192  Batches: 1  Memory Usage: 283kB\n                          Buffers: shared hit=216\n                          ->  Index Scan using infrastructure_assets_type_idx on infrastructure_assets a (actual rows=5586 loops=1)\n                                Index Cond: ((type_code)::text = 'STREETLIGHT'::text)\n                                Buffers: shared hit=216\nPlanning:\n  Buffers: shared hit=13",
+  "register_after": "Aggregate (actual rows=1 loops=1)\n  Buffers: shared hit=975\n  ->  Unique (actual rows=5581 loops=1)\n        Buffers: shared hit=975\n        ->  Merge Join (actual rows=40538 loops=1)\n              Merge Cond: (i.asset_id = a.asset_id)\n              Buffers: shared hit=975\n              ->  Index Only Scan using inspections_asset_date_idx on inspections i (actual rows=72602 loops=1)\n                    Heap Fetches: 0\n                    Buffers: shared hit=360\n              ->  Index Scan using infrastructure_assets_pkey on infrastructure_assets a (actual rows=5586 loops=1)\n                    Filter: ((type_code)::text = 'STREETLIGHT'::text)\n                    Rows Removed by Filter: 6293\n                    Buffers: shared hit=615\nPlanning:\n  Buffers: shared hit=13"
+ },
+ "index_build_seconds": 4.3,
+ "index_size": "79 MB",
+ "cluster_seconds": 10.2
+}

@@ -28,6 +28,13 @@ LOGINS = [
     ("monitor",       "gaz_monitor",   3),
 ]
 
+# Role settings (ALTER ROLE ... SET) are not inherited through group membership, so the session limits for the
+# public application and the analyst are applied to the login roles themselves.
+SETTINGS = {
+    "gaz_web":     {"default_transaction_read_only": "on", "statement_timeout": "5s", "idle_in_transaction_session_timeout": "10s"},
+    "gaz_analyst": {"statement_timeout": "2min"},
+}
+
 
 def main():
     with connect(app="create_login_roles") as conn:
@@ -41,6 +48,8 @@ def main():
                 stmt = stmt + sql.SQL(" PASSWORD {}").format(sql.Literal(pw))
             conn.execute(stmt)
             conn.execute(sql.SQL("GRANT {} TO {}").format(sql.Identifier(group), sql.Identifier(login)))
+            for name, value in SETTINGS.get(group, {}).items():
+                conn.execute(sql.SQL("ALTER ROLE {} SET {} = {}").format(sql.Identifier(login), sql.Identifier(name), sql.Literal(value)))
             print(f"{'updated' if exists else 'created'} {login:14s} in {group}{'' if pw else '  (no password)'}")
         conn.commit()
 

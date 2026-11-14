@@ -133,6 +133,12 @@ def main():
 
             last_t, open_until = begin, None
             used_dates = set()
+
+            def closeout(day):
+                # a completed repair is signed off with a close-out inspection, so the latest condition reflects the repair
+                if day < AS_OF and day not in used_dates:
+                    used_dates.add(day)
+                    inspections.append((aid, day, int(np.clip(round(c + rng.normal(0, 0.2)), 1, 3)), None, False, inspector))
             for when, kind in events:
                 c = min(5.0, c + rate * (when - last_t).days / 365.25)
                 last_t = when
@@ -152,18 +158,20 @@ def main():
                         wo, done = make_wo(rng, aid, when + dt.timedelta(days=int(rng.integers(0, 6))), "REPLACEMENT" if replace else "CORRECTIVE",
                                            prio, defect, (aid, when), AS_OF, cmin, cmax, unit_cost * renew_qty if replace else None, typ)
                         work_orders.append(wo)
-                        open_until = done or AS_OF
+                        open_until = done or (None if wo["status"] == "CANCELLED" else AS_OF)
                         if done:
                             c = 1.0 if replace else max(1.0, c - rng.uniform(1.5, 2.8))
+                            closeout(done)
                 elif kind == "fail":
                     defect = str(rng.choice(fail_defects))
                     prio = "P1" if crit >= 4 else "P2"
                     wo, done = make_wo(rng, aid, when, "EMERGENCY" if prio == "P1" else "CORRECTIVE", prio, defect, None, AS_OF, cmin, cmax, None, typ)
                     work_orders.append(wo)
                     c = max(c, 4.2)
-                    open_until = done or AS_OF
+                    open_until = done or (None if wo["status"] == "CANCELLED" else AS_OF)
                     if done:
                         c = max(1.0, c - rng.uniform(1.8, 3.0))
+                        closeout(done)
                 else:
                     wo, done = make_wo(rng, aid, when, "PREVENTIVE", "P4", "SW_SILT" if cls == "STORM" else "EL_OVERHEAT", None, AS_OF,
                                        cmin * 0.4, cmax * 0.25, None, typ, preventive=True)

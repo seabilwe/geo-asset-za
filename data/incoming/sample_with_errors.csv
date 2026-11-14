@@ -1,0 +1,16 @@
+asset_code,asset_name,type_code,status_code,install_date,wkt,lon,lat,source_ref,details
+,Valid new streetlight,STREETLIGHT,ACTIVE,2024-05-01,,28.2372,-25.7482,sample/1,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Unknown type,LAMPPOST,ACTIVE,2024-05-01,,28.2373,-25.7483,sample/2,{}
+,Bad status,STREETLIGHT,BROKEN,2024-05-01,,28.2374,-25.7484,sample/3,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Bad date,STREETLIGHT,ACTIVE,01/05/2024,,28.2375,-25.7485,sample/4,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Future date,STREETLIGHT,ACTIVE,2031-01-01,,28.2376,-25.7486,sample/5,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,No geometry,STREETLIGHT,ACTIVE,2024-05-01,,,,sample/6,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Broken WKT,STREETLIGHT,ACTIVE,2024-05-01,POINT (28.2377,,,sample/7,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Swapped coordinates,STREETLIGHT,ACTIVE,2024-05-01,,-25.7487,28.2377,sample/8,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Line for a point type,HYDRANT,ACTIVE,2024-05-01,"LINESTRING (28.2370 -25.7480, 28.2380 -25.7485)",,,sample/9,"{""diameter_mm"":80}"
+,In Johannesburg,STREETLIGHT,ACTIVE,2024-05-01,,28.0473,-26.2041,sample/10,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+SL-900001,Duplicate code A,STREETLIGHT,ACTIVE,2024-05-01,,28.2378,-25.7488,sample/11,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+SL-900001,Duplicate code B,STREETLIGHT,ACTIVE,2024-05-01,,28.2379,-25.7489,sample/12,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+HY-900002,Wrong prefix,STREETLIGHT,ACTIVE,2024-05-01,,28.2380,-25.7490,sample/13,"{""lamp_type"":""LED"",""wattage_w"":60,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Wattage out of range,STREETLIGHT,ACTIVE,2024-05-01,,28.2381,-25.7491,sample/14,"{""lamp_type"":""LED"",""wattage_w"":5000,""pole_height_m"":8,""pole_material"":""Steel""}"
+,Second valid row,HYDRANT,ACTIVE,2023-02-14,,28.2382,-25.7492,sample/15,"{""diameter_mm"":80}"

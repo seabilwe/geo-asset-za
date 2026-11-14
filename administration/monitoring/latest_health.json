@@ -1,0 +1,279 @@
+{
+ "generated_at": "2026-11-14T15:18:03+00:00",
+ "health": [
+  {
+   "metric": "Database size",
+   "value": "365 MB",
+   "status": "OK",
+   "threshold": "Warn above 5 GB"
+  },
+  {
+   "metric": "Active connections",
+   "value": "1",
+   "status": "OK",
+   "threshold": "Warn above 80% of max_connections"
+  },
+  {
+   "metric": "Idle in transaction",
+   "value": "0",
+   "status": "OK",
+   "threshold": "Warn on any session idle in a transaction for 5 minutes"
+  },
+  {
+   "metric": "Long-running queries",
+   "value": "0",
+   "status": "OK",
+   "threshold": "Warn on any query over 30 s"
+  },
+  {
+   "metric": "Cache hit ratio",
+   "value": "87.94%",
+   "status": "WARN",
+   "threshold": "Warn below 95%"
+  },
+  {
+   "metric": "Tables with >20% dead rows",
+   "value": "0",
+   "status": "OK",
+   "threshold": "Warn when a table over 1,000 dead rows is more than 20% dead"
+  },
+  {
+   "metric": "Last successful backup",
+   "value": "2026-11-14 17:09",
+   "status": "OK",
+   "threshold": "Fail when older than 26 hours (daily schedule plus margin)"
+  },
+  {
+   "metric": "Last successful restore test",
+   "value": "2026-11-14 17:09",
+   "status": "OK",
+   "threshold": "Warn when older than 8 days (weekly schedule)"
+  },
+  {
+   "metric": "Rows rejected on import (30 days)",
+   "value": "10",
+   "status": "WARN",
+   "threshold": "Warn when any row was rejected; see admin.v_failed_imports"
+  },
+  {
+   "metric": "Reporting refreshed",
+   "value": "2026-11-14 17:07",
+   "status": "OK",
+   "threshold": "Warn when older than 26 hours"
+  }
+ ],
+ "largest_tables": [
+  {
+   "schema": "audit",
+   "table": "change_log",
+   "rows": 23646,
+   "size": "19 MB",
+   "index_size": "2744 kB"
+  },
+  {
+   "schema": "maintenance",
+   "table": "inspections",
+   "rows": 81873,
+   "size": "19 MB",
+   "index_size": "7664 kB"
+  },
+  {
+   "schema": "staging",
+   "table": "incoming_assets",
+   "rows": 11889,
+   "size": "9240 kB",
+   "index_size": "760 kB"
+  },
+  {
+   "schema": "maintenance",
+   "table": "maintenance_costs",
+   "rows": 67597,
+   "size": "8496 kB",
+   "index_size": "3216 kB"
+  },
+  {
+   "schema": "assets",
+   "table": "infrastructure_assets",
+   "rows": 11879,
+   "size": "6816 kB",
+   "index_size": "2568 kB"
+  },
+  {
+   "schema": "maintenance",
+   "table": "work_orders",
+   "rows": 17263,
+   "size": "3928 kB",
+   "index_size": "1640 kB"
+  },
+  {
+   "schema": "maintenance",
+   "table": "maintenance_activities",
+   "rows": 21356,
+   "size": "3200 kB",
+   "index_size": "944 kB"
+  },
+  {
+   "schema": "operations",
+   "table": "maintenance_priority_summary",
+   "rows": 11814,
+   "size": "1864 kB",
+   "index_size": "416 kB"
+  },
+  {
+   "schema": "assets",
+   "table": "streetlights",
+   "rows": 5586,
+   "size": "512 kB",
+   "index_size": "144 kB"
+  },
+  {
+   "schema": "assets",
+   "table": "water_assets",
+   "rows": 3552,
+   "size": "384 kB",
+   "index_size": "96 kB"
+  },
+  {
+   "schema": "assets",
+   "table": "road_segments",
+   "rows": 2391,
+   "size": "296 kB",
+   "index_size": "72 kB"
+  },
+  {
+   "schema": "reference",
+   "table": "wards",
+   "rows": 107,
+   "size": "288 kB",
+   "index_size": "56 kB"
+  }
+ ],
+ "connections": [
+  {
+   "role": "(background)",
+   "state": "background",
+   "connections": 4
+  },
+  {
+   "role": "monitor",
+   "state": "active",
+   "connections": 1
+  },
+  {
+   "role": "postgres",
+   "state": "background",
+   "connections": 1
+  }
+ ],
+ "unused_indexes": [
+  {
+   "table": "audit.change_log",
+   "index": "change_log_changed_at_idx",
+   "size": "24 kB"
+  },
+  {
+   "table": "assets.infrastructure_assets",
+   "index": "infrastructure_assets_geom_gist",
+   "size": "488 kB"
+  },
+  {
+   "table": "assets.infrastructure_assets",
+   "index": "infrastructure_assets_ward_idx",
+   "size": "96 kB"
+  },
+  {
+   "table": "maintenance.inspections",
+   "index": "inspections_grade_idx",
+   "size": "72 kB"
+  },
+  {
+   "table": "maintenance.work_orders",
+   "index": "work_orders_asset_idx",
+   "size": "432 kB"
+  },
+  {
+   "table": "maintenance.maintenance_activities",
+   "index": "activities_work_order_idx",
+   "size": "456 kB"
+  },
+  {
+   "table": "reference.wards",
+   "index": "wards_municipality_idx",
+   "size": "16 kB"
+  }
+ ],
+ "dead_tuples": [
+  {
+   "table": "staging.incoming_assets",
+   "live": 11889,
+   "dead": 243,
+   "dead_pct": 2.0,
+   "last_autovacuum": "2026-11-14T17:08:14.870189+02:00"
+  },
+  {
+   "table": "staging.import_rejections",
+   "live": 10,
+   "dead": 78,
+   "dead_pct": 88.6,
+   "last_autovacuum": null
+  },
+  {
+   "table": "audit.change_log",
+   "live": 23646,
+   "dead": 54,
+   "dead_pct": 0.2,
+   "last_autovacuum": "2026-11-14T17:07:20.168994+02:00"
+  },
+  {
+   "table": "assets.infrastructure_assets",
+   "live": 11879,
+   "dead": 42,
+   "dead_pct": 0.4,
+   "last_autovacuum": "2026-11-14T17:07:20.038856+02:00"
+  },
+  {
+   "table": "staging.import_batches",
+   "live": 12,
+   "dead": 19,
+   "dead_pct": 61.3,
+   "last_autovacuum": null
+  },
+  {
+   "table": "maintenance.inspections",
+   "live": 81873,
+   "dead": 8,
+   "dead_pct": 0.0,
+   "last_autovacuum": "2026-11-14T17:08:14.951869+02:00"
+  }
+ ],
+ "recent_backups": [
+  {
+   "kind": "RESTORE_TEST",
+   "finished_at": "2026-11-14T17:09:19.304023+02:00",
+   "status": "SUCCESS",
+   "size_bytes": null
+  },
+  {
+   "kind": "BACKUP",
+   "finished_at": "2026-11-14T17:09:15.482535+02:00",
+   "status": "SUCCESS",
+   "size_bytes": 4483289
+  }
+ ],
+ "import_rejections": [
+  {
+   "batch": 7,
+   "file": "osm_stormwater_channels.csv",
+   "rule": "R09",
+   "description": "Asset lies outside the study area wards",
+   "rows": 1
+  },
+  {
+   "batch": 6,
+   "file": "osm_roads.csv",
+   "rule": "R09",
+   "description": "Asset lies outside the study area wards",
+   "rows": 9
+  }
+ ]
+}
