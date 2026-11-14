@@ -1,5 +1,7 @@
 # GEO-ASSET ZA
 
+[![Database CI](https://github.com/seabilwe/geo-asset-za/actions/workflows/ci.yml/badge.svg)](https://github.com/seabilwe/geo-asset-za/actions/workflows/ci.yml)
+
 **A municipal infrastructure asset register in PostgreSQL and PostGIS: designed, secured, tested, backed up,
 monitored and published.**
 
