@@ -366,7 +366,7 @@ Triggers: `audit_change` (after delete, insert, update); `detail_matches_type` (
 
 Condition assessments. Each records a condition grade (1-5) and, for grades 4 and 5, the defect found.
 
-Rows: 81,873  ·  Row-level security: on
+Rows: 98,357  ·  Row-level security: on
 
 | Column | Type | Null | Default | Description |
 |---|---|---|---|---|
@@ -393,7 +393,7 @@ Triggers: `audit_change` (after delete, insert, update); `inspection_before_writ
 
 Work done on a work order. An activity date must fall on or after the work order was raised.
 
-Rows: 21,356
+Rows: 21,912
 
 | Column | Type | Null | Default | Description |
 |---|---|---|---|---|
@@ -417,7 +417,7 @@ Triggers: `activity_before_write` (before insert, update); `audit_change` (after
 
 Planned (budgeted) and actual (incurred) costs per work order, in rand.
 
-Rows: 67,597
+Rows: 68,916
 
 | Column | Type | Null | Default | Description |
 |---|---|---|---|---|
@@ -442,7 +442,7 @@ Triggers: `audit_change` (after delete, insert, update)
 
 Work orders raised against assets, from inspections or reported faults.
 
-Rows: 17,263
+Rows: 17,601
 
 | Column | Type | Null | Default | Description |
 |---|---|---|---|---|
@@ -590,7 +590,7 @@ Rows: 14
 
 Every backup and every restore test, written by administration/backup and administration/restore.
 
-Rows: 0
+Rows: 2
 
 | Column | Type | Null | Default | Description |
 |---|---|---|---|---|
@@ -635,7 +635,7 @@ Constraints:
 
 Migrations applied to this database, with the checksum of each file at the time.
 
-Rows: 13
+Rows: 15
 
 | Column | Type | Null | Default | Description |
 |---|---|---|---|---|
@@ -666,9 +666,11 @@ Rows: 13
 | `api.assets` | view | Public asset list with latest condition. Coordinates rounded to about 10 cm. |
 | `api.kpis` | view | Headline figures for the dashboard, one row. |
 | `api.lookups` | view | Codes and labels used by the web application. |
+| `api.priority_assets` | view | Assets in service ranked by risk score (condition x criticality, adjusted for age and overdue inspection). |
 | `api.spend_by_month` | view | Planned and actual maintenance spend per month and asset class. |
 | `api.summary_by_type` | view | Asset counts, quantities and condition bands per asset type. |
 | `api.wards` | view | Study area ward boundaries. |
+| `api.work_order_performance` | view | Completed work orders per class and priority: share on time and median days to complete. |
 | `operations.asset_condition_summary` | materialized view | Assets in service by type, ward and latest condition grade (0 means never inspected). |
 | `operations.maintenance_priority_summary` | materialized view | Risk score per asset in service: condition x criticality, plus 2 past design life and 1 if an inspection is overdue. |
 | `operations.v_asset_register` | view | The register with type, ward, latest condition, age, quantity (length, area or count) and replacement value. |

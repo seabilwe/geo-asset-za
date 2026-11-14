@@ -135,7 +135,42 @@ def main():
     md += ["## Views", "", "| View | Kind | Description |", "|---|---|---|"]
     md += [f"| `{s}.{v}` | {k} | {(d or '').replace('|', '/')} |" for s, v, k, d in views]
     (OUT / "data_dictionary.md").write_text("\n".join(md) + "\n", encoding="utf-8")
-    print("wrote erd.svg, erd.png, data_dictionary.md")
+    privilege_matrix()
+    print("wrote erd.svg, erd.png, data_dictionary.md, privilege_matrix.md")
+
+
+ROLES = ["gaz_admin", "gaz_manager", "gaz_inspector", "gaz_analyst", "gaz_etl", "gaz_web", "gaz_monitor"]
+SCHEMA_ORDER = ["reference", "assets", "maintenance", "operations", "audit", "staging", "api", "admin"]
+
+
+def privilege_matrix():
+    """Effective privileges of each group role on every table and view, read from the catalog with has_table_privilege."""
+    with connect(app="build_docs") as conn:
+        objs = conn.execute("""SELECT n.nspname, c.relname FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+                                WHERE n.nspname = ANY(%s) AND c.relkind IN ('r','v','m') ORDER BY array_position(%s, n.nspname::text), c.relname""",
+                            (SCHEMA_ORDER, SCHEMA_ORDER)).fetchall()
+        md = ["# Privilege matrix", "",
+              "Generated from the catalog by `documentation/build_docs.py` with `has_table_privilege`, so it shows what each group role "
+              "can actually do, including privileges inherited through membership. S = select, I = insert, U = update "
+              "(u = some columns only), D = delete. Row-level security further limits `gaz_inspector` on `maintenance.inspections`.", "",
+              "| Object | " + " | ".join(r.replace("gaz_", "") for r in ROLES) + " |", "|---" * (len(ROLES) + 1) + "|"]
+        for s, t in objs:
+            cells = []
+            for r in ROLES:
+                q = f"{s}.{t}"
+                p = "".join(code for code, priv in (("S", "SELECT"), ("I", "INSERT"), ("U", "UPDATE"), ("D", "DELETE"))
+                            if conn.execute("SELECT has_table_privilege(%s, %s, %s)", (r, q, priv)).fetchone()[0])
+                if "U" not in p and conn.execute("SELECT has_any_column_privilege(%s, %s, 'UPDATE')", (r, q)).fetchone()[0]:
+                    p += "u"
+                cells.append(p or "·")
+            md.append(f"| `{s}.{t}` | " + " | ".join(cells) + " |")
+        funcs = conn.execute("""SELECT p.oid::regprocedure::text FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+                                 WHERE n.nspname = ANY(%s) AND p.prorettype <> 'trigger'::regtype ORDER BY 1""", (SCHEMA_ORDER,)).fetchall()
+        md += ["", "## Functions (EXECUTE)", "", "| Function | " + " | ".join(r.replace("gaz_", "") for r in ROLES) + " |", "|---" * (len(ROLES) + 1) + "|"]
+        for (f,) in funcs:
+            md.append(f"| `{f}` | " + " | ".join("X" if conn.execute("SELECT has_function_privilege(%s, %s, 'EXECUTE')", (r, f)).fetchone()[0] else "·"
+                                                  for r in ROLES) + " |")
+    (OUT / "privilege_matrix.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

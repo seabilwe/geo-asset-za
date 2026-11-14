@@ -1,0 +1,81 @@
+# GEO-ASSET ZA: database, one-off build, API with the demo web page, and the job scheduler.
+#
+#   cp .env.example .env        then set the passwords in .env
+#   docker compose up -d        first start builds the database (about a minute)
+#   open http://localhost:8000  map and dashboard;  http://localhost:8000/docs  API reference
+#   docker compose --profile admin up -d pgadmin    pgAdmin on http://localhost:5050
+#
+# Ports avoid the usual 5432 and 8080, which are often taken by a local PostgreSQL or GeoServer.
+
+x-app: &app
+  build: .
+  image: geo-asset-za-app
+  env_file: .env
+  environment:
+    PGHOST: db
+    PGPORT: "5432"
+    PGDATABASE: geoasset_za
+    PGUSER: postgres
+    PGPASSWORD: ${POSTGRES_PASSWORD}
+    TZ: Africa/Johannesburg
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: Africa/Johannesburg
+    command: >
+      postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c log_min_duration_statement=1000
+        -c log_connections=on
+        -c password_encryption=scram-sha-256
+    ports:
+      - "127.0.0.1:5433:5432"          # reachable from this computer only (QGIS, pgAdmin, psql)
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  bootstrap:
+    <<: *app
+    command: ["python", "etl/bootstrap.py"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  api:
+    <<: *app
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      bootstrap: { condition: service_completed_successfully }
+    restart: unless-stopped
+
+  scheduler:
+    <<: *app
+    command: ["python", "administration/scheduler.py"]
+    volumes:
+      - ./backups:/app/backups
+    depends_on:
+      bootstrap: { condition: service_completed_successfully }
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:8.14
+    profiles: ["admin"]
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "127.0.0.1:5050:80"
+    depends_on: [db]
+
+volumes:
+  db-data:

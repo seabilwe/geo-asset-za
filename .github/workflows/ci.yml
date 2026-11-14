@@ -1,0 +1,70 @@
+name: Database CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 1"     # every Monday: rebuild from nothing and prove backup and restore still work
+  workflow_dispatch:
+
+jobs:
+  build-test-recover:
+    runs-on: ubuntu-24.04
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: geoasset_za
+      GAZ_DEMO_PASSWORD: ci-only-password
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start PostgreSQL 16 with PostGIS 3.4
+        # started with docker run (not a service container) so that pg_stat_statements can be preloaded
+        run: |
+          docker run -d --name db -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgis/postgis:16-3.4 \
+            -c shared_preload_libraries=pg_stat_statements
+          for i in $(seq 1 30); do docker exec db pg_isready -U postgres && break; sleep 2; done
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install client tools and Python packages
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client-16
+          echo "/usr/lib/postgresql/16/bin" >> "$GITHUB_PATH"
+          python -m pip install -q -r requirements.txt
+
+      - name: Build the database from nothing
+        run: python etl/bootstrap.py
+
+      - name: Migrations are up to date and unchanged
+        run: python database/migrate.py --status
+
+      - name: Tests (integrity, security, staging, API)
+        run: python -m pytest -q
+
+      - name: Backup
+        run: python administration/backup/backup.py --dir backups
+
+      - name: Restore test
+        run: python administration/restore/restore_test.py
+
+      - name: Health report
+        run: python administration/monitoring/health_report.py --json health.json || [ $? -eq 2 ]
+
+      - name: Small benchmark
+        run: python administration/performance/benchmark.py --points 200000 --runs 3 --cleanup
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence
+          path: |
+            administration/restore/reports/latest.md
+            health.json
+            administration/performance/results/benchmark.json
+            documentation/performance_report.md

@@ -1,0 +1,14 @@
+[out:json][timeout:120];
+(
+ node["highway"="street_lamp"](-25.800,28.190,-25.730,28.285);
+ way["highway"~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street|service|motorway_link|trunk_link|primary_link|secondary_link|tertiary_link)$"](-25.800,28.190,-25.730,28.285);
+ node["emergency"="fire_hydrant"](-25.800,28.190,-25.730,28.285);
+ nwr["man_made"~"^(water_tower|reservoir_covered|water_works|pumping_station|storage_tank|manhole|wastewater_plant)$"](-25.800,28.190,-25.730,28.285);
+ way["man_made"="pipeline"](-25.800,28.190,-25.730,28.285);
+ nwr["waterway"~"^(drain|culvert|ditch|canal|stream)$"](-25.800,28.190,-25.730,28.285);
+ nwr["power"~"^(substation|transformer|minor_line|line|cable|pole|tower)$"](-25.800,28.190,-25.730,28.285);
+ nwr["highway"~"^(traffic_signals|bus_stop)$"](-25.800,28.190,-25.730,28.285);
+ nwr["amenity"~"^(school|college|university|clinic|hospital|doctors|library|police|fire_station|community_centre|townhall|social_facility|kindergarten|post_office|waste_basket|recycling|waste_disposal|toilets|bench|marketplace)$"](-25.800,28.190,-25.730,28.285);
+ nwr["leisure"~"^(park|playground|pitch|sports_centre|swimming_pool|stadium)$"](-25.800,28.190,-25.730,28.285);
+);
+out body geom;
