@@ -6,6 +6,7 @@ Writes documentation/erd.dot, erd.svg, erd.png and data_dictionary.md. Because b
 (table and column comments, constraints, foreign keys), they cannot drift from the schema. Needs Graphviz (dot).
 """
 import html
+import re
 import pathlib
 import subprocess
 import sys
@@ -80,24 +81,48 @@ def main():
     for s, t, num, name, typ, nn, dflt, comment, ident in cols:
         by_table.setdefault((s, t), []).append((name, short_type(typ), nn, dflt, comment, ident))
 
-    # ---- ERD (Graphviz) ------------------------------------------------------------------------------------
-    lines = ['digraph erd {', '  graph [rankdir=LR, fontname="Helvetica", fontsize=11, nodesep=0.35, ranksep=1.1, pad=0.3, bgcolor="white"];',
-             '  node [shape=plaintext, fontname="Helvetica", fontsize=9];', '  edge [color="#6B5B4B", arrowhead=crow, arrowtail=none, penwidth=0.9];']
+    # ---- ERD (Graphviz), crow's foot notation ---------------------------------------------------------------
+    # Each column row is one table cell carrying a port, so relationship lines start and end exactly on the
+    # table edge at the column they join (shape=plain has no margin, so there is no gap).
+    # Parent end:  || exactly one (NOT NULL foreign key)   |o zero or one (nullable foreign key)
+    # Child end:   o< zero or many                          o| zero or one (1:1 detail table, foreign key is the primary key)
+    nullable = {(s, t, name): not nn for (s, t), cs in by_table.items() for name, typ, nn, *_ in cs}
+    lines = ['digraph erd {',
+             '  graph [rankdir=LR, fontname="Helvetica", fontsize=11, nodesep=0.4, ranksep=1.2, pad=0.3, bgcolor="white", splines=true, newrank=true];',
+             '  node [shape=plain, fontname="Helvetica", fontsize=9];',
+             '  edge [color="#5A4A3C", penwidth=1.0, dir=both, arrowsize=0.9];']
+
+    def row(port, name, typ, key):
+        nm = f"<b>{html.escape(name)}</b>" if key == "PK" else html.escape(name)
+        return (f'<tr><td port="{port}" align="left" balign="left" bgcolor="white"><table border="0" cellspacing="0" cellpadding="0"><tr>'
+                f'<td align="left" width="34">{f'<font color="#7A4B26">{key}</font>' if key else ' '}</td><td align="left" width="128">{nm}</td>'
+                f'<td align="left" width="96"><font color="#6B5B4B">{html.escape(typ)}</font></td></tr></table></td></tr>')
+
     for s in ERD_SCHEMAS:
-        lines.append(f'  subgraph cluster_{s} {{ label=<<b>{s}</b>>; fontsize=13; style="rounded"; color="#B9A383"; ')
+        lines.append(f'  subgraph cluster_{s} {{ label=<<b>{s}</b>>; fontsize=13; style="rounded"; color="#B9A383"; margin=14;')
         for (ts, t), cs in by_table.items():
             if ts != s or (s, t) in SKIP_ERD:
                 continue
-            rows = [f'<tr><td bgcolor="{COLOURS[s]}" colspan="2" align="left"><b>{t}</b></td></tr>']
+            rows = [f'<tr><td bgcolor="{COLOURS[s]}" align="left"><b>{t}</b></td></tr>']
             for name, typ, nn, dflt, comment, ident in cs:
-                key = "PK " if name in pk.get((s, t), ()) else ("FK " if name in fk_cols.get((s, t), ()) else "")
-                nm = f"<b>{html.escape(name)}</b>" if key == "PK " else html.escape(name)
-                rows.append(f'<tr><td align="left" port="{name}">{key}{nm}</td><td align="left"><font color="#6B5B4B">{html.escape(typ)}</font></td></tr>')
-            lines.append(f'    "{s}.{t}" [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">{"".join(rows)}</table>>];')
+                key = "PK" if name in pk.get((s, t), ()) else ("FK" if name in fk_cols.get((s, t), ()) else "")
+                rows.append(row(name, name, typ, key))
+            lines.append(f'    "{s}.{t}" [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#5A4A3C">{"".join(rows)}</table>>];')
         lines.append("  }")
     for s, t, c, fs, ft in fks:
         if s in ERD_SCHEMAS and fs in ERD_SCHEMAS and (s, t) not in SKIP_ERD and (fs, ft) not in SKIP_ERD:
-            lines.append(f'  "{fs}.{ft}" -> "{s}.{t}":"{c[0]}";')
+            parent_col = sorted(pk[(fs, ft)])[0]
+            one_to_one = set(c) == pk.get((s, t), set())
+            tail = "teeodot" if nullable[(s, t, c[0])] else "teetee"
+            head = "teeodot" if one_to_one else "crowodot"
+            lines.append(f'  "{fs}.{ft}":"{parent_col}" -> "{s}.{t}":"{c[0]}" [arrowtail={tail}, arrowhead={head}];')
+    # notation key
+    lines += ['  subgraph cluster_key { label=<<b>Notation</b>>; fontsize=12; style="rounded"; color="#B9A383"; margin=10;',
+              '    k1a [label="", shape=point, width=0.01]; k1b [label=<one parent, zero or many children>, shape=plaintext, fontsize=10];',
+              '    k2a [label="", shape=point, width=0.01]; k2b [label=<one parent, zero or one child (detail table)>, shape=plaintext, fontsize=10];',
+              '    k3a [label="", shape=point, width=0.01]; k3b [label=<optional parent (nullable foreign key)>, shape=plaintext, fontsize=10];',
+              '    k1a -> k1b [arrowtail=teetee, arrowhead=crowodot, minlen=1]; k2a -> k2b [arrowtail=teetee, arrowhead=teeodot, minlen=1];',
+              '    k3a -> k3b [arrowtail=teeodot, arrowhead=crowodot, minlen=1];', '  }']
     lines.append("}")
     (OUT / "erd.dot").write_text("\n".join(lines), encoding="utf-8")
     for fmt in ("svg", "png"):
@@ -105,6 +130,9 @@ def main():
         if fmt == "png":
             args.insert(1, "-Gdpi=110")
         subprocess.run(args, check=True)
+    svg = (OUT / "erd.svg").read_text(encoding="utf-8")
+    svg = re.sub(r'<svg width="[\d.]+pt" height="[\d.]+pt"', '<svg width="100%" style="max-width:2200px;height:auto"', svg, count=1)
+    (OUT / "erd.svg").write_text(svg, encoding="utf-8")
 
     # ---- Data dictionary ----------------------------------------------------------------------------------
     md = ["# Data dictionary", "",
